@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="UTF-8">
+		<title>KNOWLEDGE_INFOTABS</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#157879">
+		<link rel="stylesheet" href="css/normalize.css">
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/cayman.css">
+	</head>
+	<body>
+		<section class="page-header">
+			<h1><img src="figures/logo.png" style="max-width:50%;"></h1>
+			<a href="https://vgupta123.github.io/docs/TransKBLSTM.pdf" class="btn">Paper</a>
+			<a href="https://github.com/utahnlp/knowledge_infotabs" class="btn">Code</a>
+			<a href="https://infotabs.github.io/" class="btn">InfoTabS</a>
+			<a href="https://youtu.be/CldBchM8IK0" class="btn">Video</a>
+			<a href="https://vgupta123.github.io/docs/Trans-KBLSTM_Poster.pdf" class="btn">Poster</a>
+			<a href="https://vgupta123.github.io/docs/Trans-KBLSTM_PPT.pdf" class="btn">PPT</a>
+			<a href="https://tabpert.github.io" class="btn">TabPert</a>
+		</section>
+		<section class="main-content">
+			<h1>TRANS-KBLSTM: An External Knowledge Enhanced Transformer BiLSTM model for Tabular Reasoning</h1>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2><p style="text-align: justify;"> Natural language inference on tabular data is a challenging task. Existing approaches lack the world and common sense knowledge required to perform at a human level. While massive amounts of KG data exist, approaches to integrate them with deep learning models to enhance tabular reasoning are uncommon. In this paper, we investigate a new approach using BiLSTMs to incorporate knowledge effectively into language models. Through extensive analysis, we show that our proposed architecture,	Trans-KBLSTM improves the benchmark performance on INFOTABS , a tabular NLI dataset. <p>
+		
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Tabular Inference Problem</h2>
+			<p style="text-align: justify; display:inline;"> Given a premise table, the task is to determine whether given hypothesis is true (<span style="color: darkgreen">entailment</span>), false (<span style="color: red">contradiction</span>), or undetermined (<span style="color: blue">neutral</span>, i.e. tabular natural language inference. Below is an example from the <a href="infotabs.github.io">INFOTABS </a>dataset:</p>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/example.png" style="max-width:95%;"></p>
+			<p> Here, <b>H1</b> is <span style="color: darkgreen">entailed</span>, <b>H2</b> is <span style="color: red">contradiction</span> and <b>H3</b> is <span style="color: blue">neutral</span></p>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h2>
+			<!--<p style="text-align: justify;"><ul>
+				<li>Recent work mostly focuses on <b>building</b> sophisticated <b>neural models</b></li>
+				<li>How will models designed for <b>raw text adapt for tabular data</b>?</li>
+				<li>How to <b>represent data</b> and <b>incorporate knowledge</b> into the model?
+                <li>Can better <b>pre-processing</b> of <b>tabular information</b> enhance table comprehension?
+			</ul></p>-->
+			<p style="text-align: justify;"> Recent work mostly focuses on <b>building</b> sophisticated <b>neural models</b>. We study the following questions in regards to the tabular reasoning problem. How will these models designed for <b>raw text adapt for tabular data</b>? How do we <b>represent data</b> and <b>incorporate knowledge</b> into these models? Can better <b>pre-processing</b> of <b>tabular information</b> enhance table comprehension?
+			</ul></p>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Challenges</h2>
+			<p style="text-align: justify;"> The following are the key challenges encountered while working on any tabular reasoning problem:
+			<ul>
+				<li>Poor Table Representation</li>
+				<li>Missing Lexical Knowledge</li>
+				<li>Presence of Distracting Information
+                <li>Missing Domain Knowledge
+			</ul>
+		    </p>
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Poor Table Representation</h2>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
+		    <p style="text-align: justify;"> The use of a universal template leads to most sentences being ungrammatical or non-sensible. For example,</p> 
+		    <p style="text-align: center"><span>&#10060;</span> The Founded of New York Stock Exchange are May 17, 1792; 226 years ago.</p>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Better Paragraph Representation</h3>
+		    <p style="text-align: justify;"> We form entity specific templates by using value entity types <span style="color: blue">DATE</span> or <span style="color: blue">MONEY</span> or <span style="color: blue">CARDINAL</span> or <span style="color: blue">BOOL</span>. We get, <p>
+		    <p style="text-align: center"><span>&#9989;</span> New York Stock Exchange was founded on May17, 1792; 226 years ago.</p>
+		    <p style="text-align: justify;"> Further, we add category specific information as well. For example, <p>
+		    <p style="text-align: justify;"> New York Stock Exchange is an <b><span style="color: darkgreen">organization</span></b>.</p>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Missing Lexical Knowledge</h2>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
+		    <p style="text-align: justify;"> Limited training data affects the interpretation of synonyms, antonyns, hypernyms, Hyponyns, and Co-hyponyms words such as <span style="color: blue">fewer</span>, <span style="color: blue">over</span> and negations.</p> 
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Implicit Knowledge Addition</h3>
+		    <p style="text-align: justify;"> We find that pre-training on a large Natural Language Inference dataset helps expose the model to diverse lexical constructions and the representation in also now more tuned to the NLI task.</p>
+		    <p style="text-align: justify"> So firstly, we intermediately pre-train with MNLI data and then subsequently fine tune on the INFOTABS dataset.</p>
+
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Presence of Distracting Information</h2>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
+		    <p style="text-align: justify;"> Only select rows are relevant for a given hypothesis. For example, the key <i><b>No. of listings</b></i> is enough for H1 and H2. Furthermore, due to BERT tokenization limit, useful rows in longer tables might be cropped.</p> 
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Distracting Row Removal</h3>
+		    <p style="text-align: justify;"> Here, we select only rows relevant to the hypothesis. For this, we adopt the Alignment based retrieval algorithm with fastText vectors as detailed in <span style="color: blue">Yadav et al. (2019, 2020)</span>. For example, we prune the table as below for the hypotheses H1 and H2:</p>
+		    <p style="text-align: centery">
+		    <figure>
+				<img src="figures/drrex.png" style="width:50%;">
+			</figure></p>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Missing Domain Knowledge</h2>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
+		    <p style="text-align: justify;"> In the case of H3, we need to interpret <i><b>Volume</b></i> in the financial context. For example, here, volume must be interpreted as:</p> 
+		    <p style="text-align: center"><span>&#9989;</span> In capital markets, volume, is the total number of a security that was traded during a given period of time.</p>
+		    <p style="text-align: center"><i>rather than</i></p>
+		    <p style="text-align: center"><span>&#10060;</span> In thermodynamics, volume of a system is an extensive parameter for describing its phase state.</p>
+
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Explicit Knowledge Addition</h3>
+		    <p style="text-align: justify;"> We append explicit information to enrich the keys. This helps improve model’s ability to disambiguate the meaning of the keys. </p>
+		    <h4><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Approach</h4>
+		    <ol>
+		    	<li> Use <b>BERT</b> on wordnet examples to find key embeddings.</li>
+		    	<li> Get key embeddings from premise using <b>BERT</b>.</li>
+		    	<li> Find the <b>best match</b> i.e according to similarity and add its definition to the premise.
+		    </ol>
+
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution Pipeline</h2>
+		    <p style="text-align: justify; display:inline;"> We apply the modifications described above sequentially by following the pipeline illustrated as below: </p>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/solution.png" style="max-width:95%;"></p>
+
+
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experimental Results</h2>
+			<p style="text-align: justify; display:inline;">We observe significant improvements in adversarial <span>&#593;</span><sub>2</sub> and <span>&#593;</span><sub>3</sub> datasets. Further, ablation study indicates all changes are needed, knowledge addition being the most important. <img src="figures/result.png" style="max-width:95%;"></p>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2><p style="text-align: justify;"> Our proposed pre-processing leads to <b>significant improvements</b> on the INFOTABS dataset and especially beneficial for the adversarial <span>&#593;</span><sub>2</sub> and <span>&#593;</span><sub>3</sub> datasets. The proposed solutions are applicable to <i>question answering</i> and <i>generation</i> problems with both <i>tabular</i> and <i>textual inputs</i>. We recommend that these modifications should be <b>standardized across other table reasoning tasks</b>.</p> 
+					<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>TabPert</h2>
+			<p style="text-align: justify;"> You should check our <a href="https://2021.emnlp.org">EMNLP 2021</a> paper which is a <a href="https://tabpert.github.io">tabular perturbation platform</a> to generate counterfactual examples.</p>
+	
+<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>People</h2>
+			<p style="text-align: justify;"> The following people have worked on the paper<a href="https://www.aclweb.org/anthology/2021.naacl-main.224.pdf"> "Incorporating External Knowledge to Enhance Tabular Reasoning"</a>: </p>
+			<figure>
+				<img src="figures/jneeraja.jpg" style="width:32.5%;">
+				<img src="figures/vivekg.jpg" style="width:32.5%;">
+				<img src="figures/viveks.jpg" style="width:32.5%;">
+				<figcaption>From left to right, <a href="https://www.linkedin.com/in/j-neeraja/">J. Neeraja</a>, <a href="https://vgupta123.github.io">Vivek Gupta</a> and <a href="https://svivek.com/">Vivek Srikumar</a>. </figcaption>
+			</figure>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation</h2>
+			<p style="text-align: justify;"> Please cite our paper as below.</p>
+			<pre><code>@inproceedings{neeraja-etal-2021-incorporating,
+    title = "Incorporating External Knowledge to Enhance Tabular Reasoning",
+    author = "Neeraja, J.  and
+      Gupta, Vivek  and
+      Srikumar, Vivek",
+    booktitle = "Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/2021.naacl-main.224",
+    pages = "2799--2809",
+    abstract = "Reasoning about tabular information presents unique challenges to modern NLP approaches which largely rely on pre-trained contextualized embeddings of text. In this paper, we study these challenges through the problem of tabular natural language inference. We propose easy and effective modifications to how information is presented to a model for this task. We show via systematic experiments that these strategies substantially improve tabular inference performance.",
+}</code></pre>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgement</h2>
+			<p style="text-align: justify;">Authors thank members of the <a href="https://svivek.com/">Utah NLP group</a> for their valuable insights and
+			suggestions at various stages of the project; and <a href="https://2021.naacl.org/">NAACL 2021</a> reviewers for their helpful comments. We also thank the support of NSF Grants No. 1801446 and 1822877, and a generous gift from Verisk Inc.</p>
+			<footer class="site-footer">
+				<span class="site-footer-owner"><a href="https://knowledge-infotabs.github.io">KNOWLEDGE_INFOTABS</a> is maintained by <a href="https://www.linkedin.com/in/j-neeraja/">J. Neeraja</a>.</span>
+				<span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman</a> theme by <a href="https://github.com/jasonlong">jasonlong</a>.</span>
+			</footer>
+		</section>
+	</body>
+</html>
