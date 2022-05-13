@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="css/cayman.css">
 	</head>
 	<body>
-		<section class="page-header" style="background-image: linear-gradient(to right, #293241 , #58A4B0);">
+		<section class="page-header" style="background-image: linear-gradient(to right, #272b33 , #58A4B0);">
 			<h1><img src="figures/trans-kblstm.png" style="max-width:50%;"></h1>
 			<a href="https://vgupta123.github.io/docs/TransKBLSTM.pdf" class="btn">Paper</a>
 			<a href="https://github.com/utahnlp/knowledge_infotabs" class="btn">Code</a>
@@ -22,7 +22,7 @@
 		</section>
 		<section class="main-content">
 			<h1 style="color: #C84630"> <b>TRANS-KBLSTM </b>: An External Knowledge Enhanced Transformer BiLSTM model for Tabular Reasoning</h1>
-			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2><p style="text-align: justify;"> Natural language inference on tabular data is a challenging task. Existing approaches lack the world and common sense knowledge required to perform at a human level. While massive amounts of KG data exist, approaches to integrate them with deep learning models to enhance tabular reasoning are uncommon. In this paper, we investigate a new approach using BiLSTMs to incorporate knowledge effectively into language models. Through extensive analysis, we show that our proposed architecture,	Trans-KBLSTM improves the benchmark performance on INFOTABS , a tabular NLI dataset. <p>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2><p style="text-align: justify;"> Natural language inference on tabular data is a challenging task. Existing approaches lack the world and common sense knowledge required to perform at a human level. While massive amounts of KG data exist, approaches to integrate them with deep learning models to enhance tabular reasoning are uncommon. In this paper, we investigate a new approach using BiLSTMs to incorporate knowledge effectively into language models. <br> <br> Through extensive analysis, we show that our proposed architecture,	Trans-KBLSTM improves the benchmark performance on <a href="infotabs.github.io">INFOTABS </a> , a tabular NLI dataset. <p>
 		
 			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Tabular Inference Problem</h2>
 			<p style="text-align: justify; display:inline;"> Given a premise table, the task is to determine whether given hypothesis is true (<span style="color: darkgreen">entailment</span>), false (<span style="color: red">contradiction</span>), or undetermined (<span style="color: blue">neutral</span>, i.e. tabular natural language inference. Below is an example from the <a href="infotabs.github.io">INFOTABS </a>dataset:</p>
@@ -30,20 +30,19 @@
 			<p> Here, <b>H1</b> is <span style="color: darkgreen">entailed</span>, <b>H2</b> is <span style="color: red">contradiction</span> and <b>H3</b> is <span style="color: blue">neutral</span></p>
 			
 			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Knowledge?</h2>
-			<p style="margin-left:10%; margin-right:10%;"><img src="figures/knowledge_example.png" style="max-width:95%;"></p>
-			<p style="text-align: justify;"> Predicting the Gold label requires	broad understanding of <i> California </i> is located on the <i></i>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/knowledge_example.png" style="max-width:75%;"></p>
+			<p style="text-align: justify;"> Predicting the Gold label correctly requires broad understanding of <i> California </i> is located on the <i> Coast </i>
 			</ul></p>
 			
-			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Challenges</h2>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenges and Motivation</h2>
 			<p style="text-align: justify;"> The following are the key challenges encountered while working on any tabular reasoning problem:
 			<ul>
-				<li>Poor Table Representation</li>
-				<li>Missing Lexical Knowledge</li>
-				<li>Presence of Distracting Information
-                <li>Missing Domain Knowledge
+				<li>Knowledge Extraction</li>
+				<li>Knowledge Representation</li>
+				<li>Knowledge Addition </li>
 			</ul>
 		    </p>
-		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Poor Table Representation</h2>
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Extraction</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
 		    <p style="text-align: justify;"> The use of a universal template leads to most sentences being ungrammatical or non-sensible. For example,</p> 
 		    <p style="text-align: center"><span>&#10060;</span> The Founded of New York Stock Exchange are May 17, 1792; 226 years ago.</p>
@@ -53,14 +52,14 @@
 		    <p style="text-align: justify;"> Further, we add category specific information as well. For example, <p>
 		    <p style="text-align: justify;"> New York Stock Exchange is an <b><span style="color: darkgreen">organization</span></b>.</p>
 
-			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Missing Lexical Knowledge</h2>
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Representation</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
 		    <p style="text-align: justify;"> Limited training data affects the interpretation of synonyms, antonyns, hypernyms, Hyponyns, and Co-hyponyms words such as <span style="color: blue">fewer</span>, <span style="color: blue">over</span> and negations.</p> 
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Implicit Knowledge Addition</h3>
 		    <p style="text-align: justify;"> We find that pre-training on a large Natural Language Inference dataset helps expose the model to diverse lexical constructions and the representation in also now more tuned to the NLI task.</p>
 		    <p style="text-align: justify"> So firstly, we intermediately pre-train with MNLI data and then subsequently fine tune on the INFOTABS dataset.</p>
 
-		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Presence of Distracting Information</h2>
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Addition</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
 		    <p style="text-align: justify;"> Only select rows are relevant for a given hypothesis. For example, the key <i><b>No. of listings</b></i> is enough for H1 and H2. Furthermore, due to BERT tokenization limit, useful rows in longer tables might be cropped.</p> 
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Distracting Row Removal</h3>
