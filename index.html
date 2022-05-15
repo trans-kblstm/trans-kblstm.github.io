@@ -39,55 +39,46 @@
 			<ul>
 				<li>Knowledge Extraction</li>
 				<li>Knowledge Representation</li>
-				<li>Knowledge Addition </li>
+				<li>Knowledge Integration </li>
 			</ul>
 		    </p>
 		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Extraction</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
-		    <p style="text-align: justify;"> The use of a universal template leads to most sentences being ungrammatical or non-sensible. For example,</p> 
-		    <p style="text-align: center"><span>&#10060;</span> The Founded of New York Stock Exchange are May 17, 1792; 226 years ago.</p>
-		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Better Paragraph Representation</h3>
-		    <p style="text-align: justify;"> We form entity specific templates by using value entity types <span style="color: blue">DATE</span> or <span style="color: blue">MONEY</span> or <span style="color: blue">CARDINAL</span> or <span style="color: blue">BOOL</span>. We get, <p>
-		    <p style="text-align: center"><span>&#9989;</span> New York Stock Exchange was founded on May17, 1792; 226 years ago.</p>
-		    <p style="text-align: justify;"> Further, we add category specific information as well. For example, <p>
-		    <p style="text-align: justify;"> New York Stock Exchange is an <b><span style="color: darkgreen">organization</span></b>.</p>
+		    <p style="text-align: justify;"> KG Explicit (from <a href="https://knowledge-infotabs.github.io/">KNOWLEDGE_INFOTABS</a>) augments the input with <b> With lengthy key definitions </b> that are susceptible to noise and spurious correlations. </p> 
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Relational Connections</h3>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/relationalconn.png" style="max-width:85%;"></p>
+		    <p style="text-align: justify;"> <b>Semantic Knowledge Graphs</b> represent the relationships between hypothesis and premise token pairs. <p>
+		    <p style="text-align: justify;"> To extract relevant knowledge, We use the semantic relational connections between premise and hypothesis tokens. </p>
 
-			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Representation</h2>
+		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Representation</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
-		    <p style="text-align: justify;"> Limited training data affects the interpretation of synonyms, antonyns, hypernyms, Hyponyns, and Co-hyponyms words such as <span style="color: blue">fewer</span>, <span style="color: blue">over</span> and negations.</p> 
-		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Implicit Knowledge Addition</h3>
-		    <p style="text-align: justify;"> We find that pre-training on a large Natural Language Inference dataset helps expose the model to diverse lexical constructions and the representation in also now more tuned to the NLI task.</p>
-		    <p style="text-align: justify"> So firstly, we intermediately pre-train with MNLI data and then subsequently fine tune on the INFOTABS dataset.</p>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/rep_challenge.png" style="max-width:85%;"></p>
+		    <p style="text-align: justify"> Appending bulky definitions at input introduces unnecessary noise </p>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Using Sentence Embeddings</h3>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/rep_sol.png" style="max-width:85%;"></p>
+		    <p style="text-align: justify"> Knowledge triples are first converted to sentences (refer to <a href="https://vgupta123.github.io/docs/TransKBLSTM.pdf">PAPER</a> for more details) and then embedded using <b> Sentence Transformers </b> </p>
 
-		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Addition</h2>
+
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Knowledge Integration</h2>
 		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
-		    <p style="text-align: justify;"> Only select rows are relevant for a given hypothesis. For example, the key <i><b>No. of listings</b></i> is enough for H1 and H2. Furthermore, due to BERT tokenization limit, useful rows in longer tables might be cropped.</p> 
-		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Distracting Row Removal</h3>
-		    <p style="text-align: justify;"> Here, we select only rows relevant to the hypothesis. For this, we adopt the Alignment based retrieval algorithm with fastText vectors as detailed in <span style="color: blue">Yadav et al. (2019, 2020)</span>. For example, we prune the table as below for the hypotheses H1 and H2:</p>
-		    <p style="text-align: centery">
-		    <figure>
-				<img src="figures/drrex.png" style="width:50%;">
-			</figure></p>
+		    <p style="text-align: justify;"> The main challenge that this work tries to address is the integration of external knowledge word pairs into transformer architecture. </p> 
+		    <p style="text-align: justify;"> <br> Consider a word pair relation between <i>California</i> and <i>Coast</i> from <a href="https://conceptnet.io">Conceptnet</a></p> 
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/relation.png" style="max-width:70%;"></p>
+		    <p style="text-align: justify;"> If we try to add this relation to transformer, the tokenizer will break apart <i>California</i> into <i>Cal if ornia</i></p> 
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/intebad.png" style="max-width:70%;"></p>
+		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Use BiLSTM Models</h3>
+		    <p style="text-align: justify;"> BiLSTMs use word level embeddings, hence can easily add word pair relations. In our work we use 300 Dimensional <a href="https://nlp.stanford.edu/projects/glove/">Glove Embeddings</a></p> 
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/integood.png" style="max-width:70%;"></p>
 
-			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><span>&#9672;</span> Missing Domain Knowledge</h2>
-		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Challenge</h3>
-		    <p style="text-align: justify;"> In the case of H3, we need to interpret <i><b>Volume</b></i> in the financial context. For example, here, volume must be interpreted as:</p> 
-		    <p style="text-align: center"><span>&#9989;</span> In capital markets, volume, is the total number of a security that was traded during a given period of time.</p>
-		    <p style="text-align: center"><i>rather than</i></p>
-		    <p style="text-align: center"><span>&#10060;</span> In thermodynamics, volume of a system is an extensive parameter for describing its phase state.</p>
-
-		    <h3><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution: Explicit Knowledge Addition</h3>
-		    <p style="text-align: justify;"> We append explicit information to enrich the keys. This helps improve model’s ability to disambiguate the meaning of the keys. </p>
-		    <h4><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Approach</h4>
-		    <ol>
-		    	<li> Use <b>BERT</b> on wordnet examples to find key embeddings.</li>
-		    	<li> Get key embeddings from premise using <b>BERT</b>.</li>
-		    	<li> Find the <b>best match</b> i.e according to similarity and add its definition to the premise.
-		    </ol>
+			
+		
 
 		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution Pipeline</h2>
-		    <p style="text-align: justify; display:inline;"> We apply the modifications described above sequentially by following the pipeline illustrated as below: </p>
-			<p style="margin-left:10%; margin-right:10%;"><img src="figures/solution.png" style="max-width:95%;"></p>
+		    <p style="text-align: justify; display:inline;"> With the solutions prescribed above, we develop an architecture <b>TRANS-KBLSTM</b> </p>
+			<p style="margin-left:10%; margin-right:10%;"><img src="figures/model.png" style="max-width:95%;"></p>
+
+			
 
 
 		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experimental Results</h2>
