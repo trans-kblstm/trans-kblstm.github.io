@@ -75,14 +75,33 @@
 		
 
 		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solution Pipeline</h2>
-		    <p style="text-align: justify; display:inline;"> With the solutions prescribed above, we develop an architecture <b>TRANS-KBLSTM</b> </p>
+		    <p style="text-align: justify; display:inline;"> With the solutions prescribed above, we develop the architecture <b>TRANS-KBLSTM</b> </p>
 			<p style="margin-left:10%; margin-right:10%;"><img src="figures/model.png" style="max-width:95%;"></p>
+		    <p style="text-align: justify; display:inline;"> Our full solution pipeline consists of - </p>
+			<ul>
+				<li>Relational connection retrieval from ConceptNet and Wordnet</li>
+				<li>Converting to Phrases and Encoding using Sentence Transformers</li>
+				<li>Generation of Relational Attention and embedding matrices</li>
+				<li>Using BiLSTM encoders to Encode Premise and Hypothesis</li>
+				<li>Multi-Head dot product attention to weight the importance of external knowledge into premise and hypothesis context</li>
+				<li>Compose knowledge using attention weights obtained from previous step</li>
+				<li>Mean and Max Pool the premise and hypothesis composed vectors</li>
+				<li>Combine the pooled embeddings with transformer embeddings</li>
+				<li>Apply Regularization and classify into 3 classes</li>
+			</ul>
+		    <p style="text-align: justify; display:inline;"> For a more detailed description, please refer to the <a href="https://vgupta123.github.io/docs/TransKBLSTM.pdf">PAPER</a></p>
 
-			
 
 
 		    <h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experimental Results</h2>
-			<p style="text-align: justify; display:inline;">We observe significant improvements in adversarial <span>&#593;</span><sub>2</sub> and <span>&#593;</span><sub>3</sub> datasets. Further, ablation study indicates all changes are needed, knowledge addition being the most important. <img src="figures/result.png" style="max-width:95%;"></p>
+			<p style="text-align: justify; display:inline;">We observe improvements over pre-established baselines on all test sets of INFOTABS. <br><br> <img src="figures/fullres.png" style="max-width:95%;"></p>
+			<p style="text-align: justify; display:inline;"><br> <br> We observe significant improvements on limited supervision. <br><br> <img src="figures/limitedres.png" style="max-width:95%;"></p>
+			<p style="text-align: justify; display:inline;"><br> <br> We also observe improvements across different reasoning types <br><br> <img src="figures/reasoning.png" style="max-width:95%;"></p>
+			<p style="text-align: justify; display:inline;"> <br> Ablation Studies <br><br> <img src="figures/ablation.png" style="max-width:95%;"></p>
+
+		    <p style="text-align: justify; display:inline;"> <br> <br> <br> As always, for a more detailed description, please refer to the <a href="https://vgupta123.github.io/docs/TransKBLSTM.pdf">PAPER</a></p>
+
+
 			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2><p style="text-align: justify;"> Our proposed pre-processing leads to <b>significant improvements</b> on the INFOTABS dataset and especially beneficial for the adversarial <span>&#593;</span><sub>2</sub> and <span>&#593;</span><sub>3</sub> datasets. The proposed solutions are applicable to <i>question answering</i> and <i>generation</i> problems with both <i>tabular</i> and <i>textual inputs</i>. We recommend that these modifications should be <b>standardized across other table reasoning tasks</b>.</p> 
 					<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>TabPert</h2>
 			<p style="text-align: justify;"> You should check our <a href="https://2021.emnlp.org">EMNLP 2021</a> paper which is a <a href="https://tabpert.github.io">tabular perturbation platform</a> to generate counterfactual examples.</p>
@@ -93,10 +112,10 @@
 				<img src="figures/jneeraja.jpg" style="width:32.5%;">
 				<img src="figures/vivekg.jpg" style="width:32.5%;">
 				<img src="figures/viveks.jpg" style="width:32.5%;">
-				<figcaption>From left to right, <a href="https://www.linkedin.com/in/j-neeraja/">J. Neeraja</a>, <a href="https://vgupta123.github.io">Vivek Gupta</a> and <a href="https://svivek.com/">Vivek Srikumar</a>. </figcaption>
+				<figcaption>From left to right, <a href="https://www.linkedin.com/in/yvarun25221/">Yerram Varun</a>, <a href="https://vgupta123.github.io">Vivek Gupta</a> and <a href="https://svivek.com/">Vivek Srikumar</a>. </figcaption>
 			</figure>
 			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation</h2>
-			<p style="text-align: justify;"> Please cite our paper as below.</p>
+			<!-- <p style="text-align: justify;"> Please cite our paper as below.</p>
 			<pre><code>@inproceedings{neeraja-etal-2021-incorporating,
     title = "Incorporating External Knowledge to Enhance Tabular Reasoning",
     author = "Neeraja, J.  and
@@ -110,12 +129,12 @@
     url = "https://www.aclweb.org/anthology/2021.naacl-main.224",
     pages = "2799--2809",
     abstract = "Reasoning about tabular information presents unique challenges to modern NLP approaches which largely rely on pre-trained contextualized embeddings of text. In this paper, we study these challenges through the problem of tabular natural language inference. We propose easy and effective modifications to how information is presented to a model for this task. We show via systematic experiments that these strategies substantially improve tabular inference performance.",
-}</code></pre>
+}</code></pre> -->
 			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgement</h2>
 			<p style="text-align: justify;">Authors thank members of the <a href="https://svivek.com/">Utah NLP group</a> for their valuable insights and
 			suggestions at various stages of the project; and <a href="https://2021.naacl.org/">NAACL 2021</a> reviewers for their helpful comments. We also thank the support of NSF Grants No. 1801446 and 1822877, and a generous gift from Verisk Inc.</p>
 			<footer class="site-footer">
-				<span class="site-footer-owner"><a href="https://knowledge-infotabs.github.io">KNOWLEDGE_INFOTABS</a> is maintained by <a href="https://www.linkedin.com/in/j-neeraja/">J. Neeraja</a>.</span>
+				<span class="site-footer-owner"><a href="https://trans-kblstm.github.io">TRANS-KBLSTM</a> is maintained by <a href="https://www.linkedin.com/in/yvarun25221/">Yerram Varun</a>.</span>
 				<span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman</a> theme by <a href="https://github.com/jasonlong">jasonlong</a>.</span>
 			</footer>
 		</section>
